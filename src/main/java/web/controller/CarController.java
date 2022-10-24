@@ -14,7 +14,7 @@ import service.CarServiceImpl;
 public class CarController {
 
     @GetMapping(value = "/cars")
-    public String getCars(ModelMap model, @RequestParam("count") Integer count) {
+    public String getCars(ModelMap model, @RequestParam(required = false) Integer count) {
         List<Car> carList = new ArrayList<>();
         carList.add(new Car("blue", "mercedes", 150));
         carList.add(new Car("red", "bmw", 200));
@@ -22,8 +22,13 @@ public class CarController {
         carList.add(new Car("black", "honda", 150));
         carList.add(new Car("yellow", "kia", 150));
         CarService carService = new CarServiceImpl();
-        List<Car> carByCount = carService.getByCount(carList, count);
-        model.addAttribute("carList", carByCount);
+        if (count == null) {
+            model.addAttribute("carList", carList);
+        } else {
+            List<Car> carByCount = carService.getByCount(carList, count);
+            model.addAttribute("carList", carByCount);
+        }
+
         return "car";
     }
 }
